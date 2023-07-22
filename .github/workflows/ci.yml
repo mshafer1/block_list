@@ -14,7 +14,7 @@ jobs:
       
       - name: Fetch data
         run: |
-          curl -A "${{ secrets.user_agent }}" https://www.dshield.org/api/intelfeed/?json | jq "." > intelfeed
+          curl -A "${{ secrets.USER_AGENT }}" https://www.dshield.org/api/intelfeed/?json | jq "." > intelfeed
 
       - name: Update cache
         run: |
