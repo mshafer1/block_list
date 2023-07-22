@@ -20,7 +20,7 @@ jobs:
 
       - name: Update cache
         run: |
-          cat intelfeed | jq '[.[] | select( (.description | contains("blocklistde22") or contains("blocklistde80") or contains("blocklistde443") )) | .ip ] | unique | sort' > data.json
+          cat intelfeed | jq '[.[] | select( (.description | contains("blocklistde22") or contains("blocklistde80") or contains("blocklistde443") )) | .ip ] | unique | sort' | jq -r tostring > data.json
       
       - name: GIT commit and push all changed files
         env: 
