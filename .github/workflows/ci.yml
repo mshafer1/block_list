@@ -3,7 +3,7 @@ on:
     branches:
       - main
     paths-ignore:
-      - data.json
+      - bad_actors.json
   workflow_dispatch:
   schedule:
     - cron: '0 6 * * *'
@@ -25,7 +25,7 @@ jobs:
 
       - name: Update cache
         run: |
-          cat intelfeed | jq '[.[] | select( (.description | contains("blocklistde22") or contains("blocklistde80") or contains("blocklistde443") )) | .ip ] | unique | sort' | jq -r tostring > data.json
+          cat intelfeed | jq '[.[] | select( (.description | contains("blocklistde22") or contains("blocklistde80") or contains("blocklistde443") )) | .ip ] | unique | sort' | jq -r tostring > bad_actors.json
       
       - name: GIT commit and push all changed files
         env: 
