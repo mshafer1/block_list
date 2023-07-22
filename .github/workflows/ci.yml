@@ -19,17 +19,23 @@ jobs:
       - name: Install jq
         run: sudo apt-get install -y jq
       
-      - name: Fetch data
+      - name: Fetch intelfeed
         run: |
           curl -A "${{ secrets.USER_AGENT }}" https://www.dshield.org/api/intelfeed/?json | jq "." > intelfeed
+      
+      - name: Fetch coudcidrs
+        run: |
+          curl -A "${{ secrets.USER_AGENT }}" https://isc.sans.edu/api/cloudcidrs?json | jq "." > cloudcidrs
 
       - name: Update cache
         run: |
           cat intelfeed | jq '[.[] | select( (.description | contains("blocklistde22") or contains("blocklistde80") or contains("blocklistde443") )) | .ip ] | unique | sort' | jq -r tostring > bad_actors.json
+
+          cat cloudcidrs | jq "[ .[] | .prefix ]"  > cloud_ips.json
       
       - name: GIT commit and push all changed files
         env: 
-          CI_COMMIT_MESSAGE: Update data file
+          CI_COMMIT_MESSAGE: Update data file(s)
           CI_COMMIT_AUTHOR: Continuous Integration
         run: |
           git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
