@@ -29,9 +29,9 @@ jobs:
 
       - name: Update cache
         run: |
-          cat intelfeed | jq '[.[] | select( (.description | contains("blocklistde22") or contains("blocklistde80") or contains("blocklistde443") )) | .ip ] | unique | sort' | jq -r tostring > bad_actors.json
+          cat intelfeed | jq '[.[] | select( (.description | contains("blocklistde22") or contains("blocklistde80") or contains("blocklistde443") )) | .ip ] | unique | sort' | jq -r tostring | tee bad_actors.json
 
-          cat cloudcidrs | jq "[ .[] | .prefix ]"  > cloud_ips.json
+          cat cloudcidrs | jq "[ .[] | .prefix ]"  | tee cloud_ips.json
       
       - name: GIT commit and push all changed files
         env: 
