@@ -64,7 +64,7 @@ class IP(typing.NamedTuple):
     def _bitmask(self):
         """IP address bitmask as tuple of octets.
 
-        >>> IP(data=(10, 2, 20, 23), mask=24).bitmask
+        >>> IP(data=(10, 2, 20, 23), mask=24)._bitmask
         (255, 255, 255, 0)
         """
         if self.mask is None:
