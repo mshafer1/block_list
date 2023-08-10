@@ -34,6 +34,9 @@ jobs:
 
           cat cloudcidrs | jq "[ .[] | .prefix ]"  | tee cloud_ips.json | head -n 10
       
+      - name: Update simplified lists
+        run: make
+      
       - name: GIT commit and push all changed files
         env: 
           CI_COMMIT_MESSAGE: Update data file(s)

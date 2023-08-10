@@ -68,10 +68,6 @@ class IP(typing.NamedTuple):
         return f"{'.'.join(str(part) for part in self.data)}" + ("" if not self.mask else f"/{self.mask}")
 
     @property
-    def as_cidr(self):
-        return f"{'.'.join([str(part) for part in self.data])}/{self.mask}"
-
-    @property
     def bitmask(self):
         """
         >>> IP(data=(10, 2, 20, 23), mask=24).bitmask
@@ -327,7 +323,7 @@ def _print_graph_as_dot(graph: TreeNode, *_, _first=True):
 
     targets = [f"{child.name}" for child in (graph.left, graph.right) if child is not None]
     color = 'fillcolor = "grey" style="filled"' if _first else ''
-    print(f'{graph.name} [label="{graph.val.as_cidr}" {color}]')
+    print(f'{graph.name} [label="{graph.val.as_string()}" {color}]')
     if targets:
         print(f"{graph.name} -> {', '.join(targets)}")
     if graph.left is not None:
@@ -365,17 +361,12 @@ def main(files: typing.List[pathlib.Path], print_graph=False, output: typing.Opt
             pass
 
 
+    st.getListInOrder()
     with output.open("w") as fout:
         kwargs = {}
         if pretty:
             kwargs["indent"]=4
-        json.dump([x.as_cidr for x in ip_ranges_stack], fout, **kwargs)
-
-    with (FILE_DIR / "list.txt").open("w") as fout:
-        ip: IP
-        st.getListInOrder()
-        for ip in st.listInOrder:
-            print(ip.as_string(), f"({ip.network.as_string()} - {ip.broadcast.as_string()})", file=fout)
+        json.dump([x.as_string() for x in st.listInOrder], fout, **kwargs)
 
 def merge_adjacent_in_tree(st):
     print("Merging...")
@@ -424,7 +415,7 @@ def merge_adjacent_in_tree(st):
 
 @click.command()
 @click.option("--print-graph", is_flag=True)
-@click.optiona("--output", metavar="FILE", default="output.json", type=click.Path(path_type=pathlib.Path))
+@click.option("--output", metavar="FILE", default="output.json", type=click.Path(path_type=pathlib.Path))
 @click.option("--pretty", is_flag=True, help="pretty-print the output file (else, minify)")
 @click.argument("files", metavar="FILE", nargs=-1, type=click.Path(path_type=pathlib.Path))
 def _main(files: typing.List[pathlib.Path], print_graph: bool, output: pathlib.Path, pretty: bool):
