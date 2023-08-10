@@ -26,7 +26,7 @@ jobs:
           poetry lock --check
       - uses: actions/cache@v2
         with:
-          path: ~/.cache/pypoetry/virtualenvs
+          path: .venv
           key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
       - name: Install the Package
         run: poetry install -vvv
@@ -44,7 +44,7 @@ jobs:
           poetry-version: ${{ env.POETRY_VERSION }}
       - uses: actions/cache@v2
         with:
-          path: ~/.cache/pypoetry/virtualenvs
+          path: .venv
           key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
       - name: Install the Package
         run: poetry install -vvv
