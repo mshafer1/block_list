@@ -1,3 +1,4 @@
+"""IP address tools."""
 import json
 import pathlib
 import typing
@@ -26,18 +27,22 @@ _n_leading_ones_to_int = {n: int("0b" + "1" * n + "0" * (8 - n), 2) for n in ran
 
 
 class IP(typing.NamedTuple):
+    """IP Address model."""
+
     data: typing.Tuple[int, int, int, int]
     mask: typing.Optional[int]
 
     @classmethod
     def from_cidr(cls, value: str):
+        """Load IP from Classless Inter-Domain Routing value."""
         base, mask = value.split("/")
         mask = int(mask)
         return cls.from_string(value=base, mask=mask)
 
     @classmethod
     def from_string(cls, value: str, mask: typing.Optional[int]):
-        """
+        """Load IP from string and mask.
+
         >>> IP.from_string('10.2.20.23', 24)
         IP(data=(10, 2, 20, 23), mask=24)
         """
@@ -46,7 +51,8 @@ class IP(typing.NamedTuple):
         return result
 
     def as_string(self):
-        """
+        """Return IP in cidr notation.
+
         >>> IP(data=(10, 2, 20, 23), mask=24).as_string()
         '10.2.20.23/24'
         """
@@ -55,8 +61,9 @@ class IP(typing.NamedTuple):
         )
 
     @property
-    def bitmask(self):
-        """
+    def _bitmask(self):
+        """IP address bitmask as tuple of octets.
+
         >>> IP(data=(10, 2, 20, 23), mask=24).bitmask
         (255, 255, 255, 0)
         """
@@ -75,32 +82,35 @@ class IP(typing.NamedTuple):
 
     @property
     def network(self):
-        """
+        """Network IP (lowest) for range.
+
         >>> IP(data=(10, 2, 20, 23), mask=24).network
         IP(data=(10, 2, 20, 0), mask=None)
 
         >>> IP(data=(10, 2, 20, 23), mask=14).network
         IP(data=(10, 0, 0, 0), mask=None)
         """
-        result = tuple([v & m for v, m in zip(self.data, self.bitmask)])
+        result = tuple([v & m for v, m in zip(self.data, self._bitmask)])
 
         return IP(result, None)
 
     @property
     def broadcast(self):
-        """
+        """Broadcast IP (highest) for range.
+
         >>> IP(data=(10, 2, 20, 23), mask=24).broadcast
         IP(data=(10, 2, 20, 255), mask=None)
 
         >>> IP(data=(10, 2, 20, 23), mask=14).broadcast
         IP(data=(10, 3, 255, 255), mask=None)
         """
-        wildmask = [255 ^ m for m in self.bitmask]
+        wildmask = [255 ^ m for m in self._bitmask]
         result = tuple([v | m for v, m in zip(self.data, wildmask)])
         return IP(result, None)
 
     def is_subset_of(self, o: "IP"):
-        """
+        """Return whether self is a subset of IP range 'o'.
+
         >>> IP(data=(10, 2, 20, 23), mask=25).is_subset_of(IP(data=(10, 2, 20, 23), mask=24))
         True
 
@@ -113,6 +123,7 @@ class IP(typing.NamedTuple):
         return o.network <= self.network and o.broadcast >= self.broadcast
 
     def has_overlap_with(self, o: "IP"):
+        """Return whether this IP has any overlap with IP o."""
         return any(
             [
                 self.network <= o.network and self.broadcast >= o.network,
@@ -123,7 +134,8 @@ class IP(typing.NamedTuple):
         )
 
     def unions_with(self, o: "IP"):
-        """
+        """Return union merges with o, if no overlap, just returns in order.
+
         >>> IP(data=(10, 2, 20, 23), mask=24).unions_with(IP(data=(10, 2, 20, 23), mask=25))
         (IP(data=(10, 2, 20, 23), mask=24),)
 
@@ -143,20 +155,9 @@ class IP(typing.NamedTuple):
                 raise Exception("Oh, hey!, this did happen!!")
             else:
                 return (o, self)
-            left = min(self.network, o.network)
-            right = max(self.broadcast, o.broadcast)
-
-            wild_bit_count = 0
-            for v in right[::-1]:
-                if v == 255:
-                    wild_bit_count += 8
-                else:
-                    binary_value = bin(v)
-                    wild_bit_count += len(binary_value) - len(binary_value.rstrip("1"))
-                    break
 
     @property
-    def as_int(self):
+    def __as_int(self):
         octets = self.data
         value = 0
         for n, octet in enumerate(octets):
@@ -164,7 +165,8 @@ class IP(typing.NamedTuple):
         return value
 
     def is_adjacent_to(self, o: "IP") -> bool:
-        """
+        """Return whether self and o are next to each other in the IP address space.
+
         >>> IP.from_cidr("3.2.33.128/26").is_adjacent_to(IP.from_cidr("3.2.33.192/26"))
         True
 
@@ -174,11 +176,12 @@ class IP(typing.NamedTuple):
         if self.has_overlap_with(o):
             return False
         lower, higher = self.unions_with(o)
-        return lower.broadcast.as_int + 1 == higher.network.as_int
+        return lower.broadcast.__as_int + 1 == higher.network.__as_int
 
     @staticmethod
-    def merge(lower: "IP", higher: "IP"):
-        """
+    def merge(lower: "IP", higher: "IP") -> typing.Optional["IP"]:
+        """Attempt to predict IP that covers from lower.network to higher.broadcast, else returns None.
+
         >>> IP.merge(IP.from_cidr('3.2.34.128/26'), IP.from_cidr('3.2.34.192/26'))
         IP(data=(3, 2, 34, 128), mask=25)
 
@@ -193,7 +196,7 @@ class IP(typing.NamedTuple):
 
         >>> IP.merge(IP.from_cidr('13.34.4.64/27'), IP.from_cidr('13.34.4.96/27'))
         IP(data=(13, 34, 4, 64), mask=26)
-        """
+        """  # noqa: W505 - doctests are long.
         start = lower.network
         broadcast = higher.broadcast
 
@@ -241,7 +244,8 @@ _node_names = iter(_name_generator())
 
 
 def _pop_and_merge(stack: typing.List[IP], merge_with: IP):
-    """
+    """Pop overlapping off of stack, then push the merged values.
+
     >>> _pop_and_merge([IP.from_cidr("1.12.0.0/14")], IP.from_cidr("1.12.34.0/23"))
     [IP(data=(1, 12, 0, 0), mask=14)]
 
@@ -263,7 +267,7 @@ def _pop_and_merge(stack: typing.List[IP], merge_with: IP):
 
     >>> _pop_and_merge([IP.from_cidr("1.12.0.0/14"), IP(data=(1, 116, 0, 0), mask=15)], IP.from_cidr("1.116.0.0/18"))
     [IP(data=(1, 12, 0, 0), mask=14), IP(data=(1, 116, 0, 0), mask=15)]
-    """
+    """  # noqa: W505 - doctests are long.
     ip_ranges_to_remerge: typing.List[IP] = []
     for i, other_ip in enumerate(reversed(stack)):
         if not any(
@@ -382,6 +386,7 @@ def merge_and_simplify(
     output: typing.Optional[pathlib.Path] = None,
     pretty: bool = False,
 ):
+    """Merge overlapping and adjacent IP ranges in files (JSON), and store in output (JSON)."""
     st = SBBST()
 
     for file in files:

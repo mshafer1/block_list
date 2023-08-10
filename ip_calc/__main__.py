@@ -1,3 +1,4 @@
+"""IP address manipulation tools."""
 import pathlib
 import typing
 
