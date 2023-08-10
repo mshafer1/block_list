@@ -41,6 +41,20 @@ optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*,>=2.7"
 
 [[package]]
+name = "coverage"
+version = "7.2.7"
+description = "Code coverage measurement for Python"
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+tomli = {version = "*", optional = true, markers = "python_full_version <= \"3.11.0a6\" and extra == \"toml\""}
+
+[package.extras]
+toml = ["tomli"]
+
+[[package]]
 name = "exceptiongroup"
 version = "1.1.2"
 description = "Backport of PEP 654 (exception groups)"
@@ -261,6 +275,21 @@ tomli = {version = ">=1.0.0", markers = "python_version < \"3.11\""}
 testing = ["argcomplete", "attrs (>=19.2.0)", "hypothesis (>=3.56)", "mock", "nose", "pygments (>=2.7.2)", "requests", "setuptools", "xmlschema"]
 
 [[package]]
+name = "pytest-cov"
+version = "4.1.0"
+description = "Pytest plugin for measuring coverage."
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+coverage = {version = ">=5.2.1", extras = ["toml"]}
+pytest = ">=4.6"
+
+[package.extras]
+testing = ["fields", "hunter", "process-tests", "six", "pytest-xdist", "virtualenv"]
+
+[[package]]
 name = "self-balancing-binary-search-tree"
 version = "0.1.4"
 description = "A Python implementation of a self balancing binary search tree (AVL Tree). Useful to practice, study and see how a SBBST works."
@@ -320,12 +349,13 @@ python-versions = ">=3.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "ae34650b6d1e01b3af619d0b10e4e400d4494a3ad3016638d36f7d31ad85ca91"
+content-hash = "745126d320a2a70bf835797dedcfb06470b81df0ca29fad620346faab2eae85c"
 
 [metadata.files]
 black = []
 click = []
 colorama = []
+coverage = []
 exceptiongroup = []
 flake8 = []
 flake8-black = []
@@ -345,6 +375,7 @@ pycodestyle = []
 pydocstyle = []
 pyflakes = []
 pytest = []
+pytest-cov = []
 self-balancing-binary-search-tree = []
 snowballstemmer = []
 toml = []
