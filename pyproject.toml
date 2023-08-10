@@ -14,6 +14,9 @@ self-balancing-binary-search-tree = "^0.1.4"
 ni-python-styleguide = "^0.4.1"
 pytest = "^7.4.0"
 
+[tool.pytest.ini_options]
+addopts = "--doctest-modules"
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

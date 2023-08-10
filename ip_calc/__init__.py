@@ -179,19 +179,19 @@ class IP(typing.NamedTuple):
     @staticmethod
     def merge(lower: "IP", higher: "IP"):
         """
-        >>> merge(IP.from_cidr('3.2.34.128/26'), IP.from_cidr('3.2.34.192/26'))
+        >>> IP.merge(IP.from_cidr('3.2.34.128/26'), IP.from_cidr('3.2.34.192/26'))
         IP(data=(3, 2, 34, 128), mask=25)
 
-        >>> merge(IP.from_cidr('3.2.32.0/26'), IP.from_cidr('3.2.32.64/26'))
+        >>> IP.merge(IP.from_cidr('3.2.32.0/26'), IP.from_cidr('3.2.32.64/26'))
         IP(data=(3, 2, 32, 0), mask=25)
 
-        >>> merge(IP.from_cidr('13.34.0.128/27'), IP.from_cidr('13.34.0.160/27'))
+        >>> IP.merge(IP.from_cidr('13.34.0.128/27'), IP.from_cidr('13.34.0.160/27'))
         IP(data=(13, 34, 0, 128), mask=26)
 
-        >>> merge(IP.from_cidr('13.34.3.128/27'), IP.from_cidr('13.34.3.224/27'))
+        >>> IP.merge(IP.from_cidr('13.34.3.128/27'), IP.from_cidr('13.34.3.224/27'))
         IP(data=(13, 34, 3, 128), mask=25)
 
-        >>> merge(IP.from_cidr('13.34.4.64/27'), IP.from_cidr('13.34.4.96/27'))
+        >>> IP.merge(IP.from_cidr('13.34.4.64/27'), IP.from_cidr('13.34.4.96/27'))
         IP(data=(13, 34, 4, 64), mask=26)
         """
         start = lower.network
