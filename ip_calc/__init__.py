@@ -66,17 +66,25 @@ class IP(typing.NamedTuple):
 
         >>> IP(data=(10, 2, 20, 23), mask=24)._bitmask
         (255, 255, 255, 0)
+
+        >>> IP(data=(10, 2, 20, 23), mask=17)._bitmask
+        (255, 255, 128, 0)
+
+        >>> IP(data=(10, 2, 20, 23), mask=18)._bitmask
+        (255, 255, 192, 0)
+
+        >>> IP(data=(10, 2, 20, 23), mask=23)._bitmask
+        (255, 255, 254, 0)
         """
         if self.mask is None:
             return tuple([255] * 4)
         masked_octets = self.mask // 8
         result = [255] * masked_octets
 
-        last_octet_mask = int("0b" + ("1" * (self.mask % 8)).ljust(8, "0"), 2)
+        last_octet_mask = _n_leading_ones_to_int[self.mask % 8]
         result.append(last_octet_mask)
 
-        if len(result) < 4:
-            result.extend([0] * (4 - len(result)))
+        result.extend([0] * (4 - len(result)))
 
         return tuple(result)
 
