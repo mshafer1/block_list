@@ -131,7 +131,14 @@ class IP(typing.NamedTuple):
         return o.network <= self.network and o.broadcast >= self.broadcast
 
     def has_overlap_with(self, o: "IP"):
-        """Return whether this IP has any overlap with IP o."""
+        """Return whether this IP has any overlap with IP o.
+        
+        >>> IP.from_cidr("1.12.0.0/14").has_overlap_with(IP.from_cidr("1.12.0.0/18"))
+        True
+
+        >>> IP.from_cidr("1.27.0.0/14").has_overlap_with(IP.from_cidr("1.12.0.0/18"))
+        False
+        """
         return any(
             [
                 self.network <= o.network and self.broadcast >= o.network,
@@ -231,6 +238,20 @@ class IP(typing.NamedTuple):
 
 
 def _excel_column_number_to_name(column_number):
+    """type convert from integer to base 26 (A=1)
+
+    >>> _excel_column_number_to_name(1)
+    'A'
+
+    >>> _excel_column_number_to_name(2)
+    'B'
+
+    >>> _excel_column_number_to_name(26)
+    'Z'
+
+    >>> _excel_column_number_to_name(27)
+    'AA'
+    """
     output = ""
     index = column_number - 1
     while index >= 0:
