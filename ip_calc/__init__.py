@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 def _int_to_num_ending_ones(x: int):
     """Return count of on bits at end of x.
-    
+
     >>> _int_to_num_ending_ones(0)
     0
 
@@ -149,7 +149,7 @@ class IP(typing.NamedTuple):
 
     def has_overlap_with(self, o: "IP"):
         """Return whether this IP has any overlap with IP o.
-        
+
         >>> IP.from_cidr("1.12.0.0/14").has_overlap_with(IP.from_cidr("1.12.0.0/18"))
         True
 
@@ -212,7 +212,9 @@ class IP(typing.NamedTuple):
 
     @staticmethod
     def merge(lower: "IP", higher: "IP") -> typing.Optional["IP"]:
-        """Attempt to predict IP that covers from lower.network to higher.broadcast, else returns None.
+        """Attempt to predict IP that covers from lower.network to higher.broadcast.
+
+        Returns None if not mergable.
 
         >>> IP.merge(IP.from_cidr('3.2.34.128/26'), IP.from_cidr('3.2.34.192/26'))
         IP(data=(3, 2, 34, 128), mask=25)
@@ -228,7 +230,7 @@ class IP(typing.NamedTuple):
 
         >>> IP.merge(IP.from_cidr('13.34.4.64/27'), IP.from_cidr('13.34.4.96/27'))
         IP(data=(13, 34, 4, 64), mask=26)
-        """  # noqa: W505 - doctests are long.
+        """
         start = lower.network
         broadcast = higher.broadcast
 
@@ -255,7 +257,7 @@ class IP(typing.NamedTuple):
 
 
 def _excel_column_number_to_name(column_number):
-    """type convert from integer to base 26 (A=1)
+    """Type convert from integer to base 26 (A=1).
 
     >>> _excel_column_number_to_name(1)
     'A'
