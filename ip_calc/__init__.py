@@ -8,6 +8,23 @@ from tqdm import tqdm
 
 
 def _int_to_num_ending_ones(x: int):
+    """Return count of on bits at end of x.
+    
+    >>> _int_to_num_ending_ones(0)
+    0
+
+    >>> _int_to_num_ending_ones(2)
+    0
+
+    >>> _int_to_num_ending_ones(1)
+    1
+
+    >>> _int_to_num_ending_ones(3)
+    2
+
+    >>> _int_to_num_ending_ones(7)
+    3
+    """
     binary = bin(x)
     ending_ones = len(binary) - len(binary.rstrip("1"))
     return ending_ones
