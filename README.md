@@ -18,3 +18,11 @@ List of IPs that are in the daily report from [Internet Storm Center](https://ww
 ## cloud_ips.json
 
 List of cloud IPs (in standard "CIDR" notation) from [Internet Storm Center](https://www.dshield.org/index.html)
+
+## cloud_ips__simplified.json
+
+`cloud_ips.json` run through [`ip_calc`](ip_calc) module to remove duplicates.
+
+## cloud_ips__and__bad_actors__simplified.json
+
+`cloud_ips.json` + `bad_actors.json` run through [`ip_calc`](ip_calc) module to remove duplicates.

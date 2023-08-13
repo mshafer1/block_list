@@ -1,0 +1,52 @@
+on:
+  pull_request:
+    types:
+      - synchronize
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  POETRY_VERSION: 1.5.1
+  PYTHON_VERSION: '3.10'
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - uses: Gr1N/setup-poetry@v8
+        with:
+          poetry-version: ${{ env.POETRY_VERSION }}
+      - name: Check for lock changes
+        run: |
+          poetry lock --check
+      - uses: actions/cache@v2
+        with:
+          path: .venv
+          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
+      - name: Install the Package
+        run: poetry install -vvv
+      - name: Lint the Code
+        run: poetry run ni-python-styleguide lint
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - uses: Gr1N/setup-poetry@v8
+        with:
+          poetry-version: ${{ env.POETRY_VERSION }}
+      - uses: actions/cache@v2
+        with:
+          path: .venv
+          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
+      - name: Install the Package
+        run: poetry install -vvv
+      - name: Run tests
+        run: poetry run pytest --cov ip_calc --cov-report term
