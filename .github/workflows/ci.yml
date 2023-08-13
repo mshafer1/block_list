@@ -9,6 +9,12 @@ on:
   schedule:
     - cron: '0 6 * * *'
 
+
+env:
+  POETRY_VERSION: 1.5.1
+  PYTHON_VERSION: '3.10'
+
+
 jobs:
   fetch_data:
     runs-on: ubuntu-latest
@@ -19,6 +25,14 @@ jobs:
 
       - name: Install jq
         run: sudo apt-get install -y jq
+      
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - uses: Gr1N/setup-poetry@v8
+        with:
+          poetry-version: ${{ env.POETRY_VERSION }}
       
       - name: Fetch intelfeed
         run: |
