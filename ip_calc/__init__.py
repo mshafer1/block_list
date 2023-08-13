@@ -431,27 +431,34 @@ def _merge_adjacent_in_tree(st: SBBST):
             group.append(ip)
         else:
             if start_of_group is not None:
-                for part in group:
-                    st.delete(part)
-                merge_last = group[0]
-                for merge_current in group[1:]:
-                    merged = IP.merge(merge_last, merge_current)
-                    if merged:
-                        merged_count += 1
-                        merge_last = merged
-                    else:
-                        to_insert.append(merge_last)
-                        merge_last = merge_current
-                to_insert.append(merge_last)
-                group = []
+                merged_count = _merge_adjacent_ips_helper(st, to_insert, group, merged_count)
                 start_of_group = None
 
         last = ip
+    if start_of_group is not None:
+        merged_count = _merge_adjacent_ips_helper(st, to_insert, group, merged_count)
+        start_of_group = None
     for replace_ip in to_insert:
         st.insert(replace_ip)
 
     print(f"  merged {merged_count} entries")
     return merged_count > 0
+
+def _merge_adjacent_ips_helper(st, to_insert, group, merged_count: int) -> int:
+    for part in group:
+        st.delete(part)
+    merge_last = group[0]
+    for merge_current in group[1:]:
+        merged = IP.merge(merge_last, merge_current)
+        if merged:
+            merged_count += 1
+            merge_last = merged
+        else:
+            to_insert.append(merge_last)
+            merge_last = merge_current
+    to_insert.append(merge_last)
+    group = []
+    return merged_count
 
 
 def merge_and_simplify(
