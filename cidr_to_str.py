@@ -1,9 +1,11 @@
+"""Utility cli to conver IP cidr notation to network-broadcast and print."""
 import sys
 
 import ip_calc
 
 
 def main(argv=None):
+    """Print out network-broadcast for argv[0] given in IP/cidr."""
     if argv is None:
         argv = sys.argv[1:]
 
