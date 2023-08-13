@@ -46,8 +46,8 @@ def test__lower_higher_and_expected__merge__expected(
 
 
 class _MergeAdjacentTreeArgs(typing.NamedTuple):
-    values: list[ip_calc.IP]
-    expected: list[ip_calc.IP]
+    values: typing.List[ip_calc.IP]
+    expected: typing.List[ip_calc.IP]
 
 
 @pytest.mark.parametrize(
