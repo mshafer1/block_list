@@ -227,8 +227,8 @@ class IP(typing.NamedTuple):
         return lower.broadcast.__as_int + 1 == higher.network.__as_int
 
     @staticmethod
-    def merge(lower: "IP", higher: "IP") -> typing.Optional["IP"]:
-        """Attempt to predict IP that covers from lower.network to higher.broadcast.
+    def merge(first: "IP", last: "IP") -> typing.Optional["IP"]:
+        """Attempt to predict IP that covers from first.network to last.broadcast.
 
         Returns None if not mergable.
 
@@ -252,6 +252,7 @@ class IP(typing.NamedTuple):
         >>> IP.merge(IP.from_cidr('3.2.2.0/24'), IP.from_cidr('3.2.3.0/24'),)
         IP(data=(3, 2, 2, 0), mask=23)
         """
+        lower, higher = min([first, last]), max([first, last])
         start = lower.network
         broadcast = higher.broadcast
 
