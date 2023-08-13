@@ -495,8 +495,9 @@ def merge_and_simplify(
         while _merge_adjacent_in_tree(st):
             pass
 
+    st.getListInOrder()
     with output.open("w") as fout:
         kwargs = {}
         if pretty:
             kwargs["indent"] = 4
-        json.dump([x.as_string() for x in ip_ranges_stack], fout, **kwargs)
+        json.dump([x.as_string() for x in st.listInOrder], fout, **kwargs)
