@@ -234,6 +234,11 @@ class IP(typing.NamedTuple):
         start = lower.network
         broadcast = higher.broadcast
 
+        if lower.is_subset_of(higher):
+            return higher
+        elif higher.is_subset_of(lower):
+            return lower
+
         possible_wild_mask = []
         for val, start_val in zip(broadcast.data[::-1], start.data[::-1]):
             number = "0b" + "1" * _ending_ones_lookup[val ^ start_val]
