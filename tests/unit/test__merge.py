@@ -1,3 +1,4 @@
+"""Test merging."""
 import typing
 
 import pytest
