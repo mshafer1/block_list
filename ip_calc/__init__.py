@@ -246,6 +246,11 @@ class IP(typing.NamedTuple):
 
         >>> IP.merge(IP.from_cidr('13.34.4.64/27'), IP.from_cidr('13.34.4.96/27'))
         IP(data=(13, 34, 4, 64), mask=26)
+
+        >>> IP.merge(IP.from_cidr('3.2.0.0/24'), IP.from_cidr('3.2.2.0/24'),)
+
+        >>> IP.merge(IP.from_cidr('3.2.2.0/24'), IP.from_cidr('3.2.3.0/24'),)
+        IP(data=(3, 2, 2, 0), mask=23)
         """
         start = lower.network
         broadcast = higher.broadcast
