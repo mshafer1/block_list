@@ -35,18 +35,18 @@ def _int_to_num_leading_ones(x: int):
 
     wait, should this be as rjust, or floating width??
 
-    # >>> _int_to_num_leading_ones(0)
-    # 0
+    >>> _int_to_num_leading_ones(0)
+    0
 
-    # >>> _int_to_num_leading_ones(5)
-    # 0
+    >>> _int_to_num_leading_ones(5)
+    0
 
-    # >>> _int_to_num_leading_ones(255)
-    # 8
+    >>> _int_to_num_leading_ones(255)
+    8
+
+    >>> _int_to_num_leading_ones(128)
+    1
     """
-    binary = bin(x).lstrip("0b")
-    leading_ones = len(binary) - len(binary.lstrip("1"))
-    return leading_ones
     binary = bin(x).lstrip("0b").rjust(4, "0")
     leading_ones = len(binary) - len(binary.lstrip("1"))
     return leading_ones
