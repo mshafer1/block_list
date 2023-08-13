@@ -8,7 +8,11 @@ import ip_calc
 
 
 @click.command()
-@click.option("--print-graph", help="Print binary search tree using DOT syntax (user can utilize graphviz to render as image)", is_flag=True)
+@click.option(
+    "--print-graph",
+    help="Print binary search tree using DOT syntax (user can utilize graphviz to render as image)",
+    is_flag=True,
+)
 @click.option(
     "--output", metavar="FILE", default="output.json", type=click.Path(path_type=pathlib.Path)
 )

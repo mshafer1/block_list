@@ -445,6 +445,7 @@ def _merge_adjacent_in_tree(st: SBBST):
     print(f"  merged {merged_count} entries")
     return merged_count > 0
 
+
 def _merge_adjacent_ips_helper(st, to_insert, group, merged_count: int) -> int:
     for part in group:
         st.delete(part)
