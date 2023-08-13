@@ -15,6 +15,9 @@ ni-python-styleguide = "^0.4.1"
 pytest = "^7.4.0"
 pytest-cov = "^4.1.0"
 
+[tool.black]
+line-length = 100
+
 [tool.pytest.ini_options]
 addopts = "--doctest-modules"
 
