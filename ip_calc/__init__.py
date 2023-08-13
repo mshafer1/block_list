@@ -31,9 +31,7 @@ def _int_to_num_ending_ones(x: int):
 
 
 def _int_to_num_leading_ones(x: int):
-    """Return number of on bits at start of number.
-
-    wait, should this be as rjust, or floating width??
+    """Return number of on bits at start of number (fixed 8-bit width).
 
     >>> _int_to_num_leading_ones(0)
     0
@@ -47,7 +45,7 @@ def _int_to_num_leading_ones(x: int):
     >>> _int_to_num_leading_ones(128)
     1
     """
-    binary = bin(x).lstrip("0b").rjust(4, "0")
+    binary = bin(x).lstrip("0b").rjust(8, "0")
     leading_ones = len(binary) - len(binary.lstrip("1"))
     return leading_ones
 
