@@ -40,7 +40,7 @@ jobs:
           curl -A "${{ secrets.USER_AGENT }}" https://www.dshield.org/api/intelfeed/?json | jq "." | tee intelfeed | head -n 10
           
       
-      - name: Fetch coudcidrs
+      - name: Fetch cloudcidrs
         run: |
           sleep 10
           curl -A "${{ secrets.USER_AGENT }}" https://isc.sans.edu/api/cloudcidrs?json | jq "." | tee cloudcidrs | head -n 10
