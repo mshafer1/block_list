@@ -37,13 +37,13 @@ jobs:
       - name: Fetch intelfeed
         run: |
           sleep 10
-          curl -A "${{ secrets.USER_AGENT }}" https://www.dshield.org/api/intelfeed/?json | jq "." > intelfeed
+          curl -A "${{ secrets.USER_AGENT }}" https://www.dshield.org/api/intelfeed/?json | jq "." | tee intelfeed | head -n 10
           
       
       - name: Fetch coudcidrs
         run: |
           sleep 10
-          curl -A "${{ secrets.USER_AGENT }}" https://isc.sans.edu/api/cloudcidrs?json | jq "." > cloudcidrs
+          curl -A "${{ secrets.USER_AGENT }}" https://isc.sans.edu/api/cloudcidrs?json | jq "." | tee cloudcidrs | head -n 10
 
       - name: Update cache
         run: |
