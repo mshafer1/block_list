@@ -506,10 +506,10 @@ def merge_and_simplify(
 
     ip_ranges_stack = []
     for node in _yield_in_order(st.head):
-        ip_ranges_stack = _pop_and_merge(ip_ranges_stack, node.value)
+        ip_ranges_stack = _pop_and_merge(ip_ranges_stack, node.val)
 
     for node in _yield_post_order(st.head):
-        st.deleteNode(node)
+        st.deleteNode(node, node.val)
 
     for ip in ip_ranges_stack:
         st.insert(ip)
