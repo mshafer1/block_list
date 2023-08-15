@@ -369,22 +369,40 @@ def _walk_in_order(
     for node in _yield_in_order(node):
         action(node)
 
-def _yield_in_order(
-    node: TreeNode      
-):
+
+def _yield_in_order(node: TreeNode):
+    """
+    Yield all nodes in order
+
+    >>> st = SBBST(); _ = [st.insert(x) for x in range(10)]
+    >>> list([x.val for x in _yield_in_order(st.head)])
+    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    """
     if node.left:
-        _yield_in_order(node.left)
+        for sub_node in _yield_in_order(node.left):
+            yield sub_node
     yield node
     if node.right:
-        _yield_in_order(node.right)
+        for sub_node in _yield_in_order(node.right):
+            yield sub_node
 
-def _yield_post_order(
-    node: TreeNode      
-):
+
+def _yield_post_order(node: TreeNode):
+    """
+    Yield all nodes in order
+
+    >>> st = SBBST(); _ = [st.insert(x) for x in range(10)]
+    >>> set([x.val for x in _yield_post_order(st.head)]) == set(range(10))
+    True
+    """
     if node.left:
-        _yield_post_order(node.left)
+        for sub_node in _yield_post_order(node.left):
+            yield sub_node
+
     if node.right:
-        _yield_post_order(node.right)
+        for sub_node in _yield_post_order(node.right):
+            yield sub_node
+
     yield node
 
 def _search(node: typing.Optional[TreeNode], value: IP):
