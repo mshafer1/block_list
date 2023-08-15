@@ -142,6 +142,9 @@ class IP(typing.NamedTuple):
 
         >>> IP(data=(10, 2, 20, 23), mask=14).broadcast
         IP(data=(10, 3, 255, 255), mask=None)
+
+        >>> IP(data=(10, 2, 20, 23), mask=None).broadcast
+        IP(data=(10, 2, 20, 23), mask=None)
         """
         wildmask = [255 ^ m for m in self._bitmask]
         result = tuple([v | m for v, m in zip(self.data, wildmask)])
