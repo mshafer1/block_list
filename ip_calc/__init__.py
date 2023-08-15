@@ -405,6 +405,7 @@ def _yield_post_order(node: TreeNode):
 
     yield node
 
+
 def _search(node: typing.Optional[TreeNode], value: IP):
     if node is None:
         return None
@@ -534,7 +535,6 @@ def merge_and_simplify(
 
     if print_graph:
         _print_graph_as_dot(st.head)
-
 
     st.getListInOrder()
     with output.open("w") as fout:
