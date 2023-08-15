@@ -45,6 +45,15 @@ jobs:
           sleep 10
           curl -A "${{ secrets.USER_AGENT }}" https://isc.sans.edu/api/cloudcidrs?json | jq "." | tee cloudcidrs | head -n 10
 
+      - name: Archive raw data
+        uses: actions/upload-artifact@v3
+        with:
+          name: raw-data
+          retention-days: 5
+          path: |
+            intelfeed
+            cloudcidrs
+
       - name: Update cache
         run: |
           cat intelfeed | jq '[.[] | select( (.description | contains("blocklistde22") or contains("blocklistde80") or contains("blocklistde443") )) | .ip ] | unique | sort' | jq -r tostring | tee bad_actors.json | head -n 10
