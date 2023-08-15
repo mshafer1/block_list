@@ -366,13 +366,26 @@ def _pop_and_merge(stack: typing.List[IP], merge_with: IP):
 def _walk_in_order(
     node: TreeNode, action: typing.Optional[typing.Callable[[TreeNode], None]] = None
 ):
-    if node.left:
-        _walk_in_order(node.left, action=action)
-    if action:
+    for node in _yield_in_order(node):
         action(node)
-    if node.right:
-        _walk_in_order(node.right, action=action)
 
+def _yield_in_order(
+    node: TreeNode      
+):
+    if node.left:
+        _yield_in_order(node.left)
+    yield node
+    if node.right:
+        _yield_in_order(node.right)
+
+def _yield_post_order(
+    node: TreeNode      
+):
+    if node.left:
+        _yield_post_order(node.left)
+    if node.right:
+        _yield_post_order(node.right)
+    yield node
 
 def _search(node: typing.Optional[TreeNode], value: IP):
     if node is None:
@@ -476,23 +489,34 @@ def merge_and_simplify(
 
         ip_ranges_stack = []
 
-        for ip in tqdm(data, desc="Evaluating: "):
-            if "/" in ip:
-                value = IP.from_cidr(ip)
+        for node in tqdm(data, desc="Evaluating: "):
+            if "/" in node:
+                value = IP.from_cidr(node)
             else:
-                value = IP.from_string(ip, mask=None)
+                value = IP.from_string(node, mask=None)
 
             ip_ranges_stack = _pop_and_merge(ip_ranges_stack, value)
 
-        for ip in tqdm(ip_ranges_stack, desc="  inserting: "):
-            already_covered = _search(st.head, ip)
+        for node in tqdm(ip_ranges_stack, desc="  inserting: "):
+            already_covered = _search(st.head, node)
             if not already_covered:
-                st.insert(ip)
-        if print_graph:
-            _print_graph_as_dot(st.head)
-
+                st.insert(node)
         while _merge_adjacent_in_tree(st):
             pass
+
+    ip_ranges_stack = []
+    for node in _yield_in_order(st.head):
+        ip_ranges_stack = _pop_and_merge(ip_ranges_stack, node.value)
+
+    for node in _yield_post_order(st.head):
+        st.deleteNode(node)
+
+    for ip in ip_ranges_stack:
+        st.insert(ip)
+
+    if print_graph:
+        _print_graph_as_dot(st.head)
+
 
     st.getListInOrder()
     with output.open("w") as fout:
