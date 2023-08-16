@@ -61,6 +61,8 @@ jobs:
           cat cloudcidrs | jq "[ .[] | .prefix ]"  | tee cloud_ips.json | head -n 10
       
       - name: Update simplified lists
+        env:
+          USER_AGENT: ${{ secrets.USER_AGENT }}
         run: make
       
       - name: GIT commit and push all changed files
