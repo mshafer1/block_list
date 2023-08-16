@@ -1,6 +1,7 @@
 all: reports
 
-reports: cloud_ips__simplified.json cloud_ips__and__bad_actors__simplified.json
+
+reports: cloud_ips__simplified.json cloud_ips__and__bad_actors__simplified.json bad_actors__simplified.json
 
 bad_actors__simplified.json: bad_actors.json | .venv/bin/python
 	poetry run python -m ip_calc --pretty --output $@ $^
