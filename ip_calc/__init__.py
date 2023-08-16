@@ -381,6 +381,8 @@ def _yield_in_order(node: TreeNode):
     >>> list([x.val for x in _yield_in_order(st.head)])
     [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
     """
+    if node is None:
+        return
     if node.left:
         for sub_node in _yield_in_order(node.left):
             yield sub_node
@@ -397,12 +399,28 @@ def _yield_post_order(node: TreeNode):
     >>> st = SBBST(); _ = [st.insert(x) for x in range(10)]
     >>> set([x.val for x in _yield_post_order(st.head)]) == set(range(10))
     True
+
+    >>> _ = [st.delete(x) for x in range(10)]; str(st)
+    'No elements in the Tree'
+
+    # I can't use deleteNode, this fails.
+    # >>> st = SBBST(); _ = [st.insert(x) for x in range(10)]
+    # >>> values = list(x.val for x in _yield_post_order(st.head)); values
+    # [0, 2, 1, 4, 6, 5, 9, 8, 7, 3]
+    # >>> _ = [st.deleteNode(st.head, x) for x in values]; str(st)
+    # 'No elements in the Tree'
+
+    >>> st = SBBST(); _ = [st.insert(x) for x in range(10)]
+    >>> values = list(x.val for x in _yield_post_order(st.head)); values
+    [0, 2, 1, 4, 6, 5, 9, 8, 7, 3]
+    >>> _ = [st.delete(x) for x in range(10)]; str(st)
+    'No elements in the Tree'
     """
-    if node.left:
+    if node.left is not None:
         for sub_node in _yield_post_order(node.left):
             yield sub_node
 
-    if node.right:
+    if node.right is not None:
         for sub_node in _yield_post_order(node.right):
             yield sub_node
 
@@ -530,8 +548,9 @@ def merge_and_simplify(
     for node in _yield_in_order(st.head):
         ip_ranges_stack = _pop_and_merge(ip_ranges_stack, node.val)
 
-    for node in _yield_post_order(st.head):
-        st.deleteNode(node, node.val)
+    vals = [node.val for node in _yield_post_order(st.head)]
+    for val in vals:
+        st.delete(val)
 
     for ip in ip_ranges_stack:
         st.insert(ip)
@@ -544,4 +563,12 @@ def merge_and_simplify(
         kwargs = {}
         if pretty:
             kwargs["indent"] = 4
-        json.dump([x.as_string() for x in st.listInOrder], fout, **kwargs)
+        seen_already = set()
+        data_to_dump = []
+        for node in _yield_in_order(st.head):
+            x = node.val
+            if x in seen_already:
+                raise Exception("This should never happen, there are duplicates in the tree.")
+            data_to_dump.append(x.as_string())
+            seen_already.add(x)
+        json.dump(data_to_dump, fout, **kwargs)
