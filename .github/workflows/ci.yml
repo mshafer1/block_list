@@ -56,9 +56,9 @@ jobs:
 
       - name: Update cache
         run: |
-          cat intelfeed | jq '[.[] | select( (.description | contains("blocklistde") or contains("miner") or contains("torexit") or contains("forumspam")  )) | .ip ] | unique | sort' | jq -r tostring | tee bad_actors.json | head -n 10
+          make bad_actors.json
 
-          cat cloudcidrs | jq "[ .[] | .prefix ]"  | tee cloud_ips.json | head -n 10
+          make cloud_ips.json
       
       - name: Update simplified lists
         env:
