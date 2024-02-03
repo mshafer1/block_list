@@ -545,12 +545,15 @@ def merge_and_simplify(
             pass
 
     ip_ranges_stack = []
-    for node in _yield_in_order(st.head):
-        ip_ranges_stack = _pop_and_merge(ip_ranges_stack, node.val)
+    if st.head is not None:
+        for node in _yield_in_order(st.head):
+            ip_ranges_stack = _pop_and_merge(ip_ranges_stack, node.val)
 
-    vals = [node.val for node in _yield_post_order(st.head)]
-    for val in vals:
-        st.delete(val)
+        vals = [node.val for node in _yield_post_order(st.head)]
+        for val in vals:
+            st.delete(val)
+
+    # else, empty list
 
     for ip in ip_ranges_stack:
         st.insert(ip)
