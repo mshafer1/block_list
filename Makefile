@@ -24,8 +24,8 @@ intelfeed:
 	curl -A "$(USER_AGENT)" https://isc.sans.edu/api/intelfeed?json | jq "." > $@
 	cat $@ | head -n 10
 
-bad_actors.json: intelfeed
-	cat intelfeed | jq '[.[] | select( (.description | contains("blocklistde") or contains("miner") or contains("torexit") or contains("forumspam") or contains("dshieldssh") or contains("scanner") or contains("shield")  )) | .ip ] | unique | sort' | jq -r tostring > $@
+bad_actors.json: intelfeed bad_actors.jq
+	cat intelfeed | jq -f bad_actors.jq | jq -r tostring > $@
 
 cloud_ips.json: cloudcidrs
 	$(shell cat cloudcidrs | jq '[ .[] | .prefix ]'  | tee $@ )

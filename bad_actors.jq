@@ -1,0 +1,1 @@
+[.[] | select( (.description | contains("blocklistde") or contains("miner") or contains("torexit") or contains("forumspam") or contains("dshieldssh") or contains("scanner") or contains("shield")  )) | .ip ] | unique | sort
