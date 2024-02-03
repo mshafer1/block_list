@@ -25,7 +25,7 @@ intelfeed:
 	cat $@ | head -n 10
 
 bad_actors.json: intelfeed
-	cat intelfeed | jq '[.[] | select( (.description | contains("blocklistde") or contains("miner") or contains("torexit") or contains("forumspam")  )) | .ip ] | unique | sort' | jq -r tostring > $@
+	cat intelfeed | jq '[.[] | select( (.description | contains("blocklistde") or contains("miner") or contains("torexit") or contains("forumspam") or contains("dshieldssh") or contains("scanner") or contains("shield")  )) | .ip ] | unique | sort' | jq -r tostring > $@
 
 cloud_ips.json: cloudcidrs
 	$(shell cat cloudcidrs | jq '[ .[] | .prefix ]'  | tee $@ )
