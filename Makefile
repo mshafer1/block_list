@@ -28,7 +28,7 @@ bad_actors.json: intelfeed bad_actors.jq
 	cat intelfeed | jq -f bad_actors.jq | jq -r tostring > $@
 
 cloud_ips.json: cloudcidrs
-	$(shell cat cloudcidrs | jq '[ .[] | .prefix ]'  | tee $@ )
+	cat cloudcidrs | jq '[ .[] | .prefix ]'  > $@
 
 reports: cloud_ips__simplified.json cloud_ips__and__bad_actors__simplified.json bad_actors__simplified.json
 
