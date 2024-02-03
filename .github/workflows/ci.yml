@@ -55,6 +55,8 @@ jobs:
             cloudcidrs
 
       - name: Update cache
+        env:
+          USER_AGENT: ${{ secrets.USER_AGENT }}
         run: |
           make bad_actors.json
 
