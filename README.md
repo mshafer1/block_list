@@ -2,6 +2,10 @@
 
 This repo provides data lists that servers may want to block temporarily.
 
+# :warning: Updater CI paused :warning:
+
+It's failing due to using old utilities. See #2
+
 ## Data Source
 
 All data copied here is derived from Internet Storm Center / DShield API
